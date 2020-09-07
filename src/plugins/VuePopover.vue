@@ -3,13 +3,16 @@
     <div ref="trigger">
       <slot name="trigger"></slot>
     </div>
-    <div v-if="visible" ref="content" class="popover__dropdown" :style="dropdownStyles">
-      <slot name="content"></slot>
+    <div v-if="visible" ref="dropdown" class="popover__dropdown" :style="dropdownStyles">
+      <slot name="dropdown"></slot>
     </div>
   </div>
 </template>
 
 <script>
+
+import { getDropdownPosition } from '../utils'
+
 export default {
   props: {
     placement: {
@@ -44,6 +47,7 @@ export default {
       this.visible = false
     },
     resizeWindow () {
+      if (!this.visible) return
       this.visible = false
       this.$nextTick(() => {
         this.visible = true
@@ -54,38 +58,9 @@ export default {
   watch: {
     visible (value) {
       if (value) {
-        setTimeout(() => {
-          const { innerWidth, innerHeight } = window
-          const { height: contentHeight, width: contentWidth } = this.$refs.content.getBoundingClientRect()
-          const { left, top, width: triggerWidth, height: triggerHeight } = this.$refs.trigger.getBoundingClientRect()
-
-          switch (this.placement) {
-            default:
-            case 'left': {
-              let offsetLeft = left - contentWidth - this.offset
-              offsetLeft = offsetLeft < 0 ? 0 : offsetLeft
-              this.dropdownStyles = { left: `${offsetLeft}px`, top: `${top + triggerHeight - (contentHeight / 2)}px` }
-              return
-            }
-            case 'right': {
-              let offsetLeft = left + triggerWidth + this.offset
-              offsetLeft = offsetLeft + triggerWidth > innerWidth ? innerWidth - this.offset - contentWidth : offsetLeft
-              this.dropdownStyles = { left: `${offsetLeft}px`, top: `${top + triggerHeight - (contentHeight / 2)}px` }
-              return
-            }
-            case 'top': {
-              let offsetTop = top - triggerHeight - this.offset
-              offsetTop = offsetTop - contentHeight < 0 ? 0 : offsetTop
-              this.dropdownStyles = { left: `${left + (triggerWidth / 2) - (contentWidth / 2)}px`, top: `${offsetTop}px` }
-              return
-            }
-            case 'bottom': {
-              let offsetTop = Math.ceil(top) + triggerHeight * 1.4 + this.offset
-              offsetTop = offsetTop + triggerHeight > innerHeight ? innerHeight - contentHeight - (triggerHeight / 1.3) - this.offset : offsetTop
-              this.dropdownStyles = { left: `${left + (triggerWidth / 2) - (contentWidth / 2)}px`, top: `${offsetTop}px` }
-            }
-          }
-        }, 0)
+        this.$nextTick(() => {
+          this.dropdownStyles = getDropdownPosition(this.$refs.trigger, this.$refs.dropdown, this.placement, this.offset)
+        })
       }
     }
   }

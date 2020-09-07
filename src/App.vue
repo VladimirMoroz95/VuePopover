@@ -1,38 +1,36 @@
 <template>
   <div id="app">
-    <div class="top-container">
-      <VuePopover placement="bottom">
-        <template v-slot:trigger>
-          <button>Left button</button>
-        </template>
-        <template v-slot:content>
-          <table class="table">
-            <tr>
-              <th>Column 1</th>
-              <th>Column 2</th>
-              <th>Column 3</th>
-            </tr>
-            <tr class="table__row" v-for="item in 5" :key="item">
-              <td class="table__cell">text {{ item }}.1</td>
-              <td class="table__cell">text {{ item }}.2</td>
-              <td class="table__cell">text {{ item }}.3</td>
-            </tr>
-          </table>
-        </template>
-      </VuePopover>
+    <VuePopover placement="top">
+      <template v-slot:trigger>
+        <button class="button">Left button</button>
+      </template>
+      <template v-slot:dropdown>
+        <table class="table">
+          <tr>
+            <th>Column 1</th>
+            <th>Column 2</th>
+            <th>Column 3</th>
+          </tr>
+          <tr class="table__row" v-for="item in 5" :key="item">
+            <td class="table__cell">text {{ item }}.1</td>
+            <td class="table__cell">text {{ item }}.2</td>
+            <td class="table__cell">text {{ item }}.3</td>
+          </tr>
+        </table>
+      </template>
+    </VuePopover>
 
-      <VuePopover placement="bottom">
-        <template v-slot:trigger>
-          <button>Right key</button>
-        </template>
-        <template v-slot:content>
-          <div class="form">
-            <input />
-            <button class="form__button">Submit</button>
-          </div>
-        </template>
-      </VuePopover>
-    </div>
+    <VuePopover placement="right">
+      <template v-slot:trigger>
+        <button class="button">Right key</button>
+      </template>
+      <template v-slot:dropdown>
+        <div class="form">
+          <input />
+          <button class="form__button">Submit</button>
+        </div>
+      </template>
+    </VuePopover>
   </div>
 </template>
 
@@ -50,21 +48,17 @@ export default {
 <style lang="scss">
 #app {
   display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
+  justify-content: space-between;
   height: 100vh;
   width: 100%;
 }
 
-.top-container {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-}
-
-button {
+.button {
   cursor: pointer;
   padding: 10px;
+  color: #fff;
+  background: #1493f6;
+  border: none;
 }
 
 input {
